@@ -14,10 +14,7 @@ export class LocationStatsController {
 
     // Trigger initial load and render here
     this.renderLocationName();
-    // this.renderNationalSource()
-    // this.addApplianceWatts()
-    // console.log("Hello");
-    //console.log(this.calculateEnergyPerSource("Home"));
+    this.postStaticsLeaderBoard();
   }
 
   static backButton() {
@@ -144,9 +141,20 @@ export class LocationStatsController {
         applianceItem.appendChild(ulElement);
         locationRenderList.appendChild(applianceItem);
 
-      }
+        const stateName = location.state;  // state 값을 location에서 가져옴
+        const locationData = {
+            state: stateName,  // state 값 추가
+            wind: totalWind,
+            solar: totalSolar,
+            gas: totalGas,
+            coal: totalCoal
+        };
+
+        // 서버로 POST 요청
+       this.postStaticsLeaderBoard(locationData);
     }
-  }
+}
+}
 
 
   static renderEnergyList(calculateEnergyPerSource) {
@@ -165,16 +173,19 @@ export class LocationStatsController {
   // example: this.calculateEnergyPerSource("Home");
   static async calculateEnergyPerSource(locationId) {
     let results = [];
-    // 로컬스토리지 아이디로 가전제품 정보들 가져오기
+
+    // get all the appliances information with id in localstorage
     const locationNameArray = LocationModel.getById(locationId);
     //const locationNameArray = LocationModel.getByName(name);
-    // 가전제품 배열 : 이름이 들고있는 가전제품 배열 순회하기
-    let appliances = locationNameArray["appliances"];
-    // 지역 이름으로 지역 에너지 정책 가져오기
-    const stateName = locationNameArray.state;
 
+    // appliance array
+    let appliances = locationNameArray["appliances"];
+
+    // bring the state name
+    const stateName = locationNameArray.state;
     const nationalSources = await this.renderEnergyperSource(stateName);
-    // watts랑 에너지 정책으로 계산
+
+    //calculate watts with each source
     appliances.forEach((appliance) =>
       results.push(this.nameByEnergySource(appliance.watts, nationalSources))
     );
@@ -196,6 +207,38 @@ export class LocationStatsController {
 
     return result;
   }
+
+
+  // post stats to leader board(post fetch) and go to leader board. 
+  static postStaticsLeaderBoard() {
+    console.log("heeloo")
+
+    const location = this.renderLocationName();
+    console.log("heeloo")
+    fetch('/location/leaderBoardPost', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(location)
+      })
+      .then(response => {
+        if (!response.ok) { // response.ok는 200-299 범위의 상태 코드를 의미
+          throw new Error("Network response was not ok: " + response.statusText);
+        }
+        return response.json();
+      })
+      .then(location => {
+        console.log("Success:", location);
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+  }
+
+
+
+
 }
 
 

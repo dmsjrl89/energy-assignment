@@ -4,6 +4,7 @@ import path from "path";
 import favicon from "serve-favicon"; 
 import applianceRoutes from "./routes/appliance.mjs";
 import locationStaticsRoutes from "./routes/locationStatics.mjs";
+import leaderBoardRoutes from "./routes/leaderboard.mjs";
 
 
 
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, "../src/public")));
 // TODO: Setup routes
 app.use("/appliance", applianceRoutes)
 app.use("/location", locationStaticsRoutes)
+app.use("/leaderBoard", leaderBoardRoutes)
 
 
 // TODO: redirect / to homepage
