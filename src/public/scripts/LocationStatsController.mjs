@@ -1,12 +1,16 @@
-import {
-  LocationModel
-} from "./LocationModel.mjs";
+import { LocationModel } from "./LocationModel.mjs";
 
 export class LocationStatsController {
   static locationId = "";
   static applianceLists = [];
-
   static {
+    // Post button event
+    document
+      .getElementById("post-button")
+      .addEventListener("click", (event) => {
+        event.preventDefault();
+        this.sendStatic();
+      });
     //Setup event listeners here
     document.getElementById("back-button").addEventListener("click", () => {
       this.backButton();
@@ -16,7 +20,40 @@ export class LocationStatsController {
     this.renderLocationName();
     // this.postStaticsLeaderBoard();
   }
+  // post 데이터 전처리 함수
+  static async handlePostData() {
+    // id
+    // state
+    // energy source
+    const id = localStorage.getItem("selectedLocationId");
+    const state = LocationModel.getById(id).state;
+    const energyPerSourceArray = await this.calculateEnergyPerSource(id);
 
+    const data = energyPerSourceArray.map((item) => ({
+      ...item,
+      id: id,
+      state: state,
+    }));
+    return data;
+  }
+  // post event
+  static async sendStatic() {
+    const body = await this.handlePostData();
+    fetch("/leaderBoard/leaderBoardPost", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }).then((response) => {
+      if (response.status == 200) {
+        alert(response.message);
+        //this.localStorage.push({energysource : body})
+      } else {
+        alert("Error submitting order - status: " + response.status);
+      }
+    });
+  }
   static backButton() {
     window.location = "/views/location_list.html";
   }
@@ -53,19 +90,20 @@ export class LocationStatsController {
 
         locationRenderList.appendChild(applianceItem);
 
-
         // const locationStatsWatts = document.createElement("p");
         // locationStatsWatts.innerText = JSON.stringify(
         //   await this.calculateEnergyPerSource(locationId)
-        // ); 
+        // );
         // applianceItem.appendChild(locationStatsWatts);
 
         // locationRenderList.appendChild(applianceItem);
 
         const locationStatsWatts = document.createElement("div");
         // Use the calculateEnergyPerSource method and pass locationId to get energy source data
-        const energyPerSourceArray = await this.calculateEnergyPerSource(locationId);
-
+        const energyPerSourceArray = await this.calculateEnergyPerSource(
+          locationId
+        );
+        // to-do: refactoring - function
         // Initialize totals for each energy source
         let totalWind = 0;
         let totalSolar = 0;
@@ -80,44 +118,43 @@ export class LocationStatsController {
           totalCoal += energyPerSource.coal;
         });
 
-
         // Prepare the data
         const data = {
-          labels: ['Wind', 'Solar', 'Gas', 'Coal'],
-          datasets: [{
-            label: 'Energy Consumption (watts)',
-            data: [totalWind, totalSolar, totalGas, totalCoal],
-            backgroundColor: [
-              'rgba(75, 192, 192, 0.2)', // Wind color
-              'rgba(255, 205, 86, 0.2)', // Solar color
-              'rgba(54, 162, 235, 0.2)', // Gas color
-              'rgba(255, 99, 132, 0.2)' // Coal color
-            ],
-            borderColor: [
-              'rgba(75, 192, 192, 1)',
-              'rgba(255, 205, 86, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 99, 132, 1)'
-            ],
-            borderWidth: 1
-          }]
+          labels: ["Wind", "Solar", "Gas", "Coal"],
+          datasets: [
+            {
+              label: "Energy Consumption (watts)",
+              data: [totalWind, totalSolar, totalGas, totalCoal],
+              backgroundColor: [
+                "rgba(75, 192, 192, 0.2)", // Wind color
+                "rgba(255, 205, 86, 0.2)", // Solar color
+                "rgba(54, 162, 235, 0.2)", // Gas color
+                "rgba(255, 99, 132, 0.2)", // Coal color
+              ],
+              borderColor: [
+                "rgba(75, 192, 192, 1)",
+                "rgba(255, 205, 86, 1)",
+                "rgba(54, 162, 235, 1)",
+                "rgba(255, 99, 132, 1)",
+              ],
+              borderWidth: 1,
+            },
+          ],
         };
 
         // Create the chart
-        const ctx = document.getElementById('energyChart').getContext('2d');
+        const ctx = document.getElementById("energyChart").getContext("2d");
         const energyChart = new Chart(ctx, {
-          type: 'bar', // Type of chart
+          type: "bar", // Type of chart
           data: data,
           options: {
             scales: {
               y: {
-                beginAtZero: true
-              }
-            }
-          }
+                beginAtZero: true,
+              },
+            },
+          },
         });
-
-
 
         // Create an unordered list element to display the totals
         const ulElement = document.createElement("ul");
@@ -141,24 +178,23 @@ export class LocationStatsController {
         applianceItem.appendChild(ulElement);
         locationRenderList.appendChild(applianceItem);
 
-      //   const stateName = location.state;  // state 값을 location에서 가져옴
-      //   const locationData = {
-      //       state: stateName,  // state 값 추가
-      //       wind: totalWind,
-      //       solar: totalSolar,
-      //       gas: totalGas,
-      //       coal: totalCoal
-      //   };
+        //   const stateName = location.state;  // state 값을 location에서 가져옴
+        //   const locationData = {
+        //       state: stateName,  // state 값 추가
+        //       wind: totalWind,
+        //       solar: totalSolar,
+        //       gas: totalGas,
+        //       coal: totalCoal
+        //   };
 
-      //   // 서버로 POST 요청
-      //  this.postStaticsLeaderBoard(locationData);
+        //   // 서버로 POST 요청
+        //  this.postStaticsLeaderBoard(locationData);
+      }
     }
-}
-}
-
+  }
 
   static renderEnergyList(calculateEnergyPerSource) {
-    const energyListElement = document.getElementById("location-stats-name")
+    const energyListElement = document.getElementById("location-stats-name");
     energyListElement.innerHTML = `
     Energy consumed per energy source:
     <ul>
@@ -166,9 +202,8 @@ export class LocationStatsController {
       <li>solar: ${calculateEnergyPerSource.solar}</li>
       <li>gas: ${calculateEnergyPerSource.gas}</li>
       <li>coal: ${calculateEnergyPerSource.coal}</li>
-    `
+    `;
   }
-
 
   // example: this.calculateEnergyPerSource("Home");
   static async calculateEnergyPerSource(locationId) {
@@ -176,7 +211,6 @@ export class LocationStatsController {
 
     // get all the appliances information with id in localstorage
     const locationNameArray = LocationModel.getById(locationId);
-    //const locationNameArray = LocationModel.getByName(name);
 
     // appliance array
     let appliances = locationNameArray["appliances"];
@@ -192,8 +226,6 @@ export class LocationStatsController {
     return results;
   }
 
-
-
   static nameByEnergySource(watts, nationalSource) {
     let result = {};
     let totalEnergy = 0;
@@ -208,39 +240,36 @@ export class LocationStatsController {
     return result;
   }
 
-
-  // post stats to leader board(post fetch) and go to leader board. 
+  // post stats to leader board(post fetch) and go to leader board.
   static postStaticsLeaderBoard() {
-    console.log("heeloo")
+    console.log("heeloo");
 
     const location = this.renderLocationName();
-    console.log("heeloo")
-    fetch('/location/leaderBoardPost', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(location)
-      })
-      .then(response => {
-        if (!response.ok) { // response.ok는 200-299 범위의 상태 코드를 의미
-          throw new Error("Network response was not ok: " + response.statusText);
+    console.log("heeloo");
+    fetch("/location/leaderBoardPost", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(location),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          // response.ok는 200-299 범위의 상태 코드를 의미
+          throw new Error(
+            "Network response was not ok: " + response.statusText
+          );
         }
         return response.json();
       })
-      .then(location => {
+      .then((location) => {
         console.log("Success:", location);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error:", error);
       });
   }
-
-
-
-
 }
-
 
 // location stats 페이지에서 appliances는 렌더링이 아니라
 // location model에 있는 리스트 불러와서 watts값 가져와서 계산하는거.

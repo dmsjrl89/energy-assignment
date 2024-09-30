@@ -85,30 +85,6 @@ export class LocationModel {
     }
   }
 
-
-  static getByName(name) {
-    // Load the locations from local storage
-    const entries = JSON.parse(localStorage.getItem("locations"))
-
-    // Find the entry with a match ID
-    const entry = entries.find(e => e.name == name)
-
-    // Check if we actually found a matching entry 
-    if (entry != null) {
-      // Construct a model object out of that entry's data
-      return new LocationModel(
-        entry.id,
-        entry.name,
-        entry.state,
-        entry.appliances,
-        entry.totalConsumption,
-        entry.numberOfAppliances
-      )
-    } else {
-      return null
-    }
-  }
-
   // Member fields
 
   /**
