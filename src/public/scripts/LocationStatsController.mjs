@@ -14,7 +14,7 @@ export class LocationStatsController {
 
     // Trigger initial load and render here
     this.renderLocationName();
-    this.postStaticsLeaderBoard();
+    // this.postStaticsLeaderBoard();
   }
 
   static backButton() {
@@ -141,17 +141,17 @@ export class LocationStatsController {
         applianceItem.appendChild(ulElement);
         locationRenderList.appendChild(applianceItem);
 
-        const stateName = location.state;  // state 값을 location에서 가져옴
-        const locationData = {
-            state: stateName,  // state 값 추가
-            wind: totalWind,
-            solar: totalSolar,
-            gas: totalGas,
-            coal: totalCoal
-        };
+      //   const stateName = location.state;  // state 값을 location에서 가져옴
+      //   const locationData = {
+      //       state: stateName,  // state 값 추가
+      //       wind: totalWind,
+      //       solar: totalSolar,
+      //       gas: totalGas,
+      //       coal: totalCoal
+      //   };
 
-        // 서버로 POST 요청
-       this.postStaticsLeaderBoard(locationData);
+      //   // 서버로 POST 요청
+      //  this.postStaticsLeaderBoard(locationData);
     }
 }
 }

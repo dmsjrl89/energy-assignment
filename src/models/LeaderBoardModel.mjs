@@ -1,6 +1,6 @@
-// import {
-//   DataModel
-// } from "./DataModel.mjs";
+import {
+  DataModel
+} from "./DataModel.mjs";
 
 // import {
 //   LocationModel  } from "../public/scripts/LocationModel.mjs"
@@ -22,27 +22,24 @@
 
 
 
-import { DataModel } from "./DataModel.mjs";
-import { LocationModel } from "../public/scripts/LocationModel.mjs";  // LocationModel import
-
 export class LeaderBoardModel extends DataModel {
   id = "";
   state = "";
-  totalWatts = 0;
+  energySources = {}; // 각 에너지 소스를 저장할 객체
 
-  constructor(locationId, totalWatts) {
+  constructor(locationId, energySources) {
     super();
-    // LocationModel의 인스턴스를 생성하여 id와 state를 가져옴
-    const locationModelInstance = LocationModel.getById(locationId);  // LocationModel에서 id로 가져옴
+    const locationModelInstance = LocationModel.getById(locationId); // LocationModel에서 id로 가져옴
 
     if (locationModelInstance) {
       this.id = locationModelInstance.id;       // LocationModel의 id 할당
       this.state = locationModelInstance.state; // LocationModel의 state 할당
     }
 
-    this.totalWatts = totalWatts;
+    this.energySources = energySources; // 각 에너지 소스를 저장
   }
 }
+
 
 
 
