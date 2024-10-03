@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>LeaderBoard</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/scripts/LeaderBoardFrontController.mjs" defer></script>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+
+<body>
+  <div id = 'leaderboard'>
+    <!-- <button onclick="LeaderBoardFrontController.deleteEntry('id')">Delete</button> -->
+  </div>
+
+  <script type="module">
+    import { LeaderBoardFrontController } from './LeaderBoardFrontController.mjs';
+    LeaderBoardFrontController.renderLeaderBoard();
+  </script>
+  
+</body>
+
+</html>
