@@ -59,14 +59,6 @@ export class LocationStatsController {
 
         locationRenderList.appendChild(applianceItem);
 
-        // const locationStatsWatts = document.createElement("p");
-        // locationStatsWatts.innerText = JSON.stringify(
-        //   await this.calculateEnergyPerSource(locationId)
-        // );
-        // applianceItem.appendChild(locationStatsWatts);
-
-        // locationRenderList.appendChild(applianceItem);
-
         const locationStatsWatts = document.createElement("div");
         // Use the calculateEnergyPerSource method and pass locationId to get energy source data
         const energyPerSourceArray = await this.calculateEnergyPerSource(
@@ -146,18 +138,6 @@ export class LocationStatsController {
         // Append the list to the appliance item
         applianceItem.appendChild(ulElement);
         locationRenderList.appendChild(applianceItem);
-
-        //   const stateName = location.state;  // state 값을 location에서 가져옴
-        //   const locationData = {
-        //       state: stateName,  // state 값 추가
-        //       wind: totalWind,
-        //       solar: totalSolar,
-        //       gas: totalGas,
-        //       coal: totalCoal
-        //   };
-
-        //   // 서버로 POST 요청
-        //  this.postStaticsLeaderBoard(locationData);
       }
     }
   }
@@ -244,22 +224,6 @@ export class LocationStatsController {
       });
   }
 
-  // post 데이터 전처리 함수
-  // static async handlePostData() {
-  //   // id
-  //   // state
-  //   // energy source
-  //   const id = localStorage.getItem("selectedLocationId");
-  //   const state = LocationModel.getById(id).state;
-  //   const energyPerSourceArray = await this.calculateEnergyPerSource(id);
-
-  //   const data = energyPerSourceArray.map((item) => ({
-  //     ...item,
-  //     id: id,
-  //     state: state,
-  //   }));
-  //   return data;
-  // }
   static async handlePostData() {
     const id = localStorage.getItem("selectedLocationId");
     const locationData = LocationModel.getById(id);
