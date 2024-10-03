@@ -5,10 +5,7 @@ import favicon from "serve-favicon";
 import applianceRoutes from "./routes/appliance.mjs";
 import locationStaticsRoutes from "./routes/locationStatics.mjs";
 import leaderBoardRoutes from "./routes/leaderboard.mjs";
-<<<<<<< HEAD
 import { LeaderBoardModel } from "./models/LeaderBoardModel.mjs";
-=======
->>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
 
 const app = express();
 
@@ -38,7 +35,6 @@ app.get("/", (req, res) => {
   res.redirect("/views/location_list.html");
 });
 
-<<<<<<< HEAD
 // 리더보드 데이터를 반환하는 API 엔드포인트
 app.get('/leaderBoard', (req, res) => {
   const leaderboardData = LeaderBoardModel.getAll(); // 적절한 데이터 가져오기
@@ -47,13 +43,10 @@ app.get('/leaderBoard', (req, res) => {
 });
 
 
-=======
->>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
 app.post("/leaderBoard/leaderBoardPost", (req, res) => {
   res.redirect("/views/leaderboard.html");
 });
 
-<<<<<<< HEAD
 
 
 app.delete('/leaderBoard/leaderBoardPost/:id', async (req, res) => {
@@ -85,8 +78,6 @@ app.use('/scripts', express.static(path.join(__dirname, 'scripts'), {
 }));
 
 
-=======
->>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
 // Setup serving of public files (frontend)
 app.use(express.static("src/public"));
 

@@ -4,30 +4,28 @@
 <head>
   <title>LeaderBoard</title>
   <link rel="stylesheet" href="/css/style.css">
-<<<<<<< HEAD
+
   <script type="module" src="/scripts/LeaderBoardFrontController.mjs" defer></script>
-=======
-  <script type="module" src="/scripts/FrontBoardController.mjs" defer></script>
->>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
+
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
 </head>
 
 <body>
-<<<<<<< HEAD
+
   <div id = 'leaderboard'>
     <!-- <button onclick="LeaderBoardFrontController.deleteEntry('id')">Delete</button> -->
   </div>
 
   <script type="module">
-    import { LeaderBoardFrontController } from './LeaderBoardFrontController.mjs';
-    LeaderBoardFrontController.renderLeaderBoard();
-  </script>
+    import { LeaderBoardFrontController } from '/scripts/LeaderBoardFrontController.mjs';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      LeaderBoardFrontController.init();
+    });
+
+    window.LeaderBoardFrontController = LeaderBoardFrontController; // Corrected the name
+</script>
   
-=======
-
-
-
->>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
 </body>
 
 </html>
