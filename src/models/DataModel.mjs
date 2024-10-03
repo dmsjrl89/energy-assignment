@@ -62,7 +62,11 @@ export class DataModel {
       throw new Error("Data source not initialised.");
     }
 
+<<<<<<< HEAD
     this.data.push(entry);
+=======
+    this.data.push(...entry);
+>>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
   }
 
   /**

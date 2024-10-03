@@ -3,7 +3,10 @@ import { LocationModel } from "./LocationModel.mjs";
 export class LocationStatsController {
   static locationId = "";
   static applianceLists = [];
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
   static {
     // Post button event
     document
@@ -21,9 +24,46 @@ export class LocationStatsController {
     this.renderLocationName();
     // this.postStaticsLeaderBoard();
   }
+<<<<<<< HEAD
 
   // post event
 
+=======
+  // post 데이터 전처리 함수
+  static async handlePostData() {
+    // id
+    // state
+    // energy source
+    const id = localStorage.getItem("selectedLocationId");
+    const state = LocationModel.getById(id).state;
+    const energyPerSourceArray = await this.calculateEnergyPerSource(id);
+
+    const data = energyPerSourceArray.map((item) => ({
+      ...item,
+      id: id,
+      state: state,
+    }));
+    return data;
+  }
+  // post event
+  static async sendStatic() {
+    const body = await this.handlePostData();
+    fetch("/leaderBoard/leaderBoardPost", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    }).then((response) => {
+      if (response.status == 200) {
+        alert(response.message);
+        //this.localStorage.push({energysource : body})
+      } else {
+        alert("Error submitting order - status: " + response.status);
+      }
+    });
+  }
+>>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
   static backButton() {
     window.location = "/views/location_list.html";
   }
@@ -212,9 +252,16 @@ export class LocationStatsController {
 
   // post stats to leader board(post fetch) and go to leader board.
   static postStaticsLeaderBoard() {
+<<<<<<< HEAD
 
     const location = this.renderLocationName();
 
+=======
+    console.log("heeloo");
+
+    const location = this.renderLocationName();
+    console.log("heeloo");
+>>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
     fetch("/location/leaderBoardPost", {
       method: "POST",
       headers: {
@@ -224,26 +271,36 @@ export class LocationStatsController {
     })
       .then((response) => {
         if (!response.ok) {
+<<<<<<< HEAD
           
+=======
+>>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
           // response.ok는 200-299 범위의 상태 코드를 의미
           throw new Error(
             "Network response was not ok: " + response.statusText
           );
         }
+<<<<<<< HEAD
         else
           window.location = "/views/leaderboard.html";
+=======
+>>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
         return response.json();
       })
       .then((location) => {
         console.log("Success:", location);
+<<<<<<< HEAD
         
         // window.location = "/views/leaderboard.html";
 
+=======
+>>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   }
+<<<<<<< HEAD
 
   // post 데이터 전처리 함수
   // static async handlePostData() {
@@ -308,3 +365,10 @@ export class LocationStatsController {
 /* 프론트엔드 컨트롤러에서 sendStatic() 함수가 fetch("/leaderBoard/leaderBoardPost")로 
 POST 요청을 보내면, 백엔드에서 이 함수가 호출되어 데이터를 처리합니다.
 프론트엔드에서 받은 데이터를 리더보드에 저장하는 로직을 처리한 후, 성공하면 클라이언트(프론트엔드)로 응답을 보냅니다. */
+=======
+}
+
+// location stats 페이지에서 appliances는 렌더링이 아니라
+// location model에 있는 리스트 불러와서 watts값 가져와서 계산하는거.
+// 계산한 값을 statics 페이지에 렌더링 하는거.
+>>>>>>> 7b4100066a4af4d2eaa33580ac93f6c15049325f
