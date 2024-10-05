@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Location stats</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/scripts/LocationStatsController.mjs" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+
+</head>
+
+<body>
+  <!-- TODO: Nav bar with menu -->
+  <section class="state-list-section">
+
+    <section class="top-bar">
+      <input type="button" value="Back" id="back-button">
+      <input type="button" value="Post" id="post-button">
+    </section>
+
+    <section id="location-stats-name">
+      <h2>Location Name: </h2>
+      <p>Energy consumed by source: </p>
+    </section>
+
+    <canvas id="energyChart" width="400" height="400"></canvas>
+
+
+    <section class="bottom-bar">
+    </section>
+  </section>
+</body>
+
+</html>

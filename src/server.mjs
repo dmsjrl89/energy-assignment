@@ -6,6 +6,7 @@ import applianceRoutes from "./routes/appliance.mjs";
 import locationStaticsRoutes from "./routes/locationStatics.mjs";
 import leaderBoardRoutes from "./routes/leaderboard.mjs";
 import { LeaderBoardModel } from "./models/LeaderBoardModel.mjs";
+import nationalStaticsRoutes from "./routes/nationalStatics.mjs";
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, "../src/public")));
 app.use("/appliance", applianceRoutes);
 app.use("/location", locationStaticsRoutes);
 app.use("/leaderBoard", leaderBoardRoutes);
+app.use("/national", nationalStaticsRoutes)
 
 // TODO: redirect / to homepage
 app.get("/", (req, res) => {
@@ -49,24 +51,19 @@ app.post("/leaderBoard/leaderBoardPost", (req, res) => {
 
 
 
-app.delete('/leaderBoard/leaderBoardPost/:id', async (req, res) => {
-  const id = req.params.id;
-  console.log('Received ID for deletion:', id); // 요청받은 ID 로그
+// Assuming Express.js backend
+app.delete('/leaderBoardPost/:id', (req, res) => {
+  const { id } = req.params;
+  console.log('Deleting entry with ID:', id); 
+  const deletedCount = LeaderBoardModel.delete(entry => entry.id === id);
 
-  try {
-      const deletedCount = await LeaderBoardModel.deleteById(id);
-
-      if (deletedCount === 0) {
-          console.log('Entry not found for ID:', id); // 삭제할 항목이 없을 때 로그
-          return res.status(404).send('Entry not found');
-      }
-
-      res.status(200).send('Entry deleted successfully');
-  } catch (error) {
-      console.error('Error deleting entry:', error);
-      res.status(500).send('Failed to delete entry');
+  if (deletedCount > 0) {
+    res.status(200).send('Entry deleted successfully');
+  } else {
+    res.status(404).send('Entry not found');
   }
 });
+
 
 
 app.use('/scripts', express.static(path.join(__dirname, 'scripts'), {

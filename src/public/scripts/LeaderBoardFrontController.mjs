@@ -69,7 +69,7 @@ export class LeaderBoardFrontController {
   static async deleteEntry(id) {
     console.log('Deleting entry with ID:', id);
     try {
-        const response = await fetch(`/leaderBoard/leaderBoardPost/${id}`, {
+        const response = await fetch(`/leaderBoardPost/${id}`, {
             method: 'DELETE',
         });
 
