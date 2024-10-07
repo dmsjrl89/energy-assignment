@@ -19,7 +19,14 @@ export class LeaderBoardModel extends DataModel {
     return deletedCount;
 }
 
-
+static async getEnergyData() {
+  // 에너지원 데이터 생성
+  const energyData = this.data.map(entry => ({
+      state: entry.state,
+      totalEnergy: entry.energyPerSourceArray.reduce((sum, source) => sum + source.total, 0) // 각 주의 총 에너지원 계산
+  }));
+  return energyData; // 에너지 데이터 반환
+}
 
 }
 
