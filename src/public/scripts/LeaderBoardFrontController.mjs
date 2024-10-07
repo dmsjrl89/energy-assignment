@@ -1,5 +1,12 @@
 export class LeaderBoardFrontController {
 
+  static data = null
+
+  static setData(data) {
+    this.data = data
+  }
+
+
   static async init() {
     await this.renderLeaderBoard(); // 페이지 로드 시 리더보드 렌더링
   }
@@ -13,6 +20,10 @@ export class LeaderBoardFrontController {
       console.log('Response Text:', text); // 서버에서 반환된 텍스트 확인
 
       const leaderboardData = JSON.parse(text); // JSON으로 변환
+
+      this.setData(leaderboardData)
+
+      console.log(this.data)
 
       const leaderboardDiv = document.getElementById('leaderboard');
       leaderboardDiv.innerHTML = ''; // 이전 내용을 지우기
@@ -45,7 +56,7 @@ export class LeaderBoardFrontController {
                             <td>${sourceData.solar}</td>
                             <td>${sourceData.gas}</td>
                             <td>${sourceData.coal}</td>
-<button onclick="LeaderBoardFrontController.deleteEntry('${entry.id}')">Delete</button>`;
+<button onclick="LeaderBoardFrontController.handleDeleteEnergyPerSource('${entry.id}','${entry.state}', ${index})">Delete</button> `;
               table.appendChild(row); // 테이블에 행 추가
             });
           } else {
@@ -63,31 +74,85 @@ export class LeaderBoardFrontController {
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
     }
+
   }
 
-  // 삭제 함수 추가
-  static async deleteEntry(id) {
+
+  static async deleteEnergyPerSourceByIndex(id) {
     console.log('Deleting entry with ID:', id);
     try {
-        const response = await fetch(`/leaderBoardPost/${id}`, {
-            method: 'DELETE',
-        });
+      const response = await fetch(`/leaderBoard/leaderBoardPost/${id}`, {
+        method: 'DELETE',
+      });
 
-        console.log('Response Status:', response.status);
+      console.log('Response Status:', response.status);
 
-        if (!response.ok) {
-            const errorText = await response.text(); // 서버에서 반환된 메시지 읽기
-            throw new Error(`Failed to delete entry: ${errorText}`);
-        }
+      if (!response.ok) {
+        const errorText = await response.text(); // 서버에서 반환된 메시지 읽기
+        throw new Error(`Failed to delete entry: ${errorText}`);
+      }
 
-        console.log('Entry deleted successfully');
+      console.log('Entry deleted successfully');
 
-        // 삭제 후 리더보드 다시 렌더링
-        await this.renderLeaderBoard();
+      // 삭제 후 리더보드 다시 렌더링
+      await this.renderLeaderBoard();
+
+
     } catch (error) {
-        console.error('Error deleting entry:', error);
+      console.error('Error deleting entry:', error);
     }
+  }
+
+
+
+    static deleteEnergyPerSourceByIndex(entryId, arrayIndex) {
+      // entryId에 해당하는 entry를 찾아서
+      const entry = this.data.find(entryArray => 
+        entryArray.some(entry => entry.id === entryId)
+      )?.find(entry => entry.id === entryId); // entry를 찾고
+  
+      if (!entry) {
+          console.error('Entry not found with ID:', entryId);
+          return; // entry가 없으면 함수 종료
+      }
+  
+      // entry의 energyPerSourceArray를 가져옵니다
+      const energyPerSourceArray = entry.energyPerSourceArray;
+  
+      // 필터링하여 인덱스가 arrayIndex와 다른 요소만 남긴 새로운 배열 반환
+      const updatedArray = energyPerSourceArray.filter((_, index) => index !== arrayIndex);
+      
+      console.log('Updated energyPerSourceArray:', updatedArray);
+      return updatedArray; // 업데이트된 배열 반환
+  }
+  
+
+static handleDeleteEnergyPerSource(entryId, state, arrayIndex) {
+ let energyPerSourceArray = this.deleteEnergyPerSourceByIndex(entryId, arrayIndex)
+  const body =  {
+    entryId,
+    state,
+    energyPerSourceArray
+  }
+
+  fetch("/leaderBoard/leaderBoardPost", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+
+
+  }).then((response) => {
+    if (response.status == 200) {
+      console.log(response.status)
+      window.location = "/views/leaderboard.html"
+    } else {
+      alert("Error submitting order - status: " + response.status);
+    }
+  });
 }
+
 
 
 
@@ -95,7 +160,7 @@ export class LeaderBoardFrontController {
   static async addLeaderBoardEntry(locationData) {
     try {
       const response = await fetch('/leaderBoard/leaderBoardPost', {
-        method: 'POST',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },

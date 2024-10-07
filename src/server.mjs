@@ -52,17 +52,20 @@ app.post("/leaderBoard/leaderBoardPost", (req, res) => {
 
 
 // Assuming Express.js backend
-app.delete('/leaderBoardPost/:id', (req, res) => {
+app.patch('/leaderBoard/leaderBoardPost/:id', (req, res) => {
   const { id } = req.params;
-  console.log('Deleting entry with ID:', id); 
-  const deletedCount = LeaderBoardModel.delete(entry => entry.id === id);
+  const { energyPerSourceArray } = req.body;
 
-  if (deletedCount > 0) {
-    res.status(200).send('Entry deleted successfully');
+  // 해당 ID의 entry를 찾고 업데이트
+  const updatedCount = LeaderBoardModel.update(id, { energyPerSourceArray });
+
+  if (updatedCount > 0) {
+    res.status(200).send('Entry updated successfully');
   } else {
     res.status(404).send('Entry not found');
   }
 });
+
 
 
 

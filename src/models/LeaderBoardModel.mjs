@@ -8,16 +8,17 @@ export class LeaderBoardModel extends DataModel {
     this.energyPerSourceArray = energyPerSourceArray; // energyPerSourceArray를 저장
   }
 
-  static async deleteById(id) {
-    console.log('Deleting entry with ID:', id); // 삭제하려는 ID 출력
-    console.log('Current LeaderBoard Data:', this.data); // 현재 데이터 확인
-    
-    // ID 비교 시 형식 통일을 위해 모두 문자열로 변환하여 비교
-    const deletedCount = this.delete(entry => entry.id.toString() === id.toString());
-
-    console.log('Number of entries deleted:', deletedCount); // 삭제된 항목의 수 출력
-    return deletedCount;
-}
+  static update(id, updateData) {
+    const entryIndex = this.data.findIndex(entry => entry.id === id);
+  
+    if (entryIndex !== -1) {
+      // 기존 데이터를 업데이트
+      this.data[entryIndex] = { ...this.data[entryIndex], ...updateData };
+      return 1; // 업데이트된 항목의 수
+    }
+    return 0; // 업데이트 실패
+  }
+  
 
 static async getEnergyData() {
   // 에너지원 데이터 생성
